@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-body">
+  <main class="login-card">
+    <div class="brand-mark">DANA</div>
+    <h1>Admin Mutasi</h1>
+    <p>Masuk pakai ID dan password dari Railway Variables.</p>
+
+    <% if (error) { %>
+      <div class="alert"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/login">
+      <label>ID Admin</label>
+      <input name="username" autocomplete="username" required placeholder="admin">
+      <label>Password</label>
+      <input name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+      <button type="submit">LOGIN</button>
+    </form>
+  </main>
+</body>
+</html>
