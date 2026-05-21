@@ -1,0 +1,82 @@
+<header class="topbar">
+  <div>
+    <h1>Dashboard Mutasi Dana</h1>
+    <p>Realtime JSON DB · Volume: <%= DATA_DIR %></p>
+  </div>
+  <form method="POST" action="/logout"><button class="btn ghost">Logout</button></form>
+</header>
+
+<section class="stats-grid">
+  <div class="stat"><span>Total Mutasi</span><b id="statTrx"><%= stats.totalTrx %></b></div>
+  <div class="stat"><span>Total Hari Ini</span><b><%= rupiah(stats.todayAmount) %></b></div>
+  <div class="stat"><span>Pending Deposit</span><b><%= stats.pending %></b></div>
+  <div class="stat"><span>Approved</span><b><%= stats.approved %></b></div>
+</section>
+
+<main class="grid-main">
+  <section class="panel">
+    <div class="panel-head"><h2>Mutasi Realtime</h2><span id="liveBadge">LIVE</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Waktu</th><th>Provider</th><th>Nominal</th><th>Pengirim</th><th>Device</th><th>Status</th></tr></thead>
+        <tbody id="trxBody">
+          <% transactions.forEach(t => { %>
+          <tr>
+            <td><%= new Date(t.createdAt).toLocaleString('id-ID') %></td>
+            <td><%= t.provider %></td>
+            <td><%= rupiah(t.amount) %></td>
+            <td><%= t.sender %></td>
+            <td><%= t.device_id %></td>
+            <td><span class="badge"><%= t.status %></span></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <h2>Device Dana</h2>
+    <div id="deviceList" class="device-list">
+      <% devices.forEach(d => { %>
+      <div class="device-card" data-device="<%= d.device_id %>">
+        <b><%= d.device_id %></b>
+        <span class="<%= d.computedStatus === 'ONLINE' ? 'online' : 'offline' %>"><%= d.computedStatus %></span>
+        <small>Last seen: <%= d.last_seen ? new Date(d.last_seen).toLocaleString('id-ID') : '-' %></small>
+      </div>
+      <% }) %>
+    </div>
+  </aside>
+</main>
+
+<section class="panel" id="deposits">
+  <div class="panel-head"><h2>Deposit Pending / Auto Approve</h2></div>
+  <form class="deposit-form" method="POST" action="/admin/deposits">
+    <input name="username" placeholder="Username member">
+    <input name="amount" type="number" placeholder="Nominal unik, contoh 100123" required>
+    <input name="note" placeholder="Catatan">
+    <button class="btn" type="submit">Tambah Pending</button>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>User</th><th>Nominal</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+      <tbody id="depositBody">
+        <% deposits.forEach(d => { %>
+        <tr>
+          <td><%= d.username %></td><td><%= rupiah(d.amount) %></td><td><span class="badge"><%= d.status %></span></td><td><%= new Date(d.createdAt).toLocaleString('id-ID') %></td>
+          <td><% if(d.status === 'PENDING'){ %><form method="POST" action="/admin/deposits/<%= d.id %>/cancel"><button class="mini">Cancel</button></form><% } %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel" id="logs">
+  <div class="panel-head"><h2>Log Sistem</h2><form method="POST" action="/admin/clear-logs"><button class="mini">Clear</button></form></div>
+  <div class="logs">
+    <% logs.forEach(l => { %><div><b><%= l.type %></b> <%= l.message %> <small><%= new Date(l.createdAt).toLocaleString('id-ID') %></small></div><% }) %>
+  </div>
+</section>
+
+<script src="/js/dashboard.js"></script>

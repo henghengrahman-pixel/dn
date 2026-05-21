@@ -1,0 +1,11 @@
+<div class="login-page">
+  <form class="login-card" method="POST" action="/login">
+    <div class="brand-dot"></div>
+    <h1><%= appName %></h1>
+    <p>Login Admin</p>
+    <% if (typeof error !== 'undefined' && error) { %><div class="alert"><%= error %></div><% } %>
+    <input type="text" name="username" placeholder="ID Admin" required autocomplete="username">
+    <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+    <button type="submit">MASUK DASHBOARD</button>
+  </form>
+</div>
